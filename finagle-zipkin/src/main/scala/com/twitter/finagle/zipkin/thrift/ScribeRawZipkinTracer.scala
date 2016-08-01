@@ -11,7 +11,7 @@ import com.twitter.finagle.util.DefaultTimer
 import com.twitter.finagle.zipkin.core.{TracerCache, Span, RawZipkinTracer}
 import com.twitter.finagle.zipkin.thriftscala.{ResultCode, LogEntry, Scribe}
 import com.twitter.finagle.{Service, SimpleFilter}
-import com.twitter.scrooge.TReusableMemoryTransport
+import com.twitter.scrooge.{TReusableMemoryTransport, TUnboundedByteArrayOutputStream}
 import com.twitter.util._
 import java.io.CharArrayWriter
 import java.net.InetSocketAddress
@@ -175,7 +175,7 @@ private[thrift] class ScribeRawZipkinTracer(
     */
   private[this] val encoder = BaseEncoding.base64()
   private class ReusableTransport {
-    private[this] val baos = new TByteArrayOutputStream(initialSizeInBytes) {
+    private[this] val baos = new TUnboundedByteArrayOutputStream(initialSizeInBytes) {
       private[this] val writer = new CharArrayWriter(initialSizeInBytes) {
         override def reset(): Unit = {
           super.reset()
